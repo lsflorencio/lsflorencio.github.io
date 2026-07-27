@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Calculadora de Dilatação Térmica dos Sólidos</title>
+
+<style>
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f4f4;
+    margin:0;
+}
+p2{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f4f4;
+    color: #757575;
+    margin:0;
+}
+            
+        </style>
+
+    </head>
+    <body>
+    <center>
+        <br/>
+        <h>CALCULAR DILATAÇÃO</h>
+        <br/>
+        <p>Temperatura Inicial</p>
+
+        <input type="checkbox" class="opcao" id="cbti" value="sim" checked/>
+        <input
+            type="text"
+            id="seletor_ti"
+            value="20" />
+        <br/>
+        <p2> Em °C</p2>
+        <br/>
+        <p>Temperatura Final</p>
+
+        <input type="checkbox" class="opcao"id="cbtf" value="sim" checked/>
+        <input
+            type="text"
+            id="seletor_tf"
+            value="120" />
+        <br/>
+        <p2> Em °C</p2>
+        <br/>
+        <p>Tamanho Inicial</p>
+        <input type="checkbox" class="opcao"id="cbtai" value="sim" checked/>
+        <input
+            type="text"
+            id="seletor_tai"
+            value="100" />
+        <br/>
+        <p2> Em cm, cm² ou cm³ a depender do tipo de dilatação</p2>
+        <br/>
+        <p>Tamanho Final</p>
+        <input type="checkbox" class="opcao"id="cbtaf" value="sim"/>
+        <input
+            type="text"
+            id="seletor_taf"
+            value="" />
+        <br/>
+        <p2> Em cm, cm² ou cm³ a depender do tipo de dilatação</p2>
+        <br/>
+        <p>Selecionar Material:</p>
+        <select id="material" name="material">
+<option value="0.000022">Alumínio</option>
+<option value="0.000017">Cobre</option>
+<option value="0.000012">Concreto</option>
+<option value="0.000027">Chumbo</option>
+<option value="0.000012">Ferro</option>
+<option value="0.000019">Latão</option>
+        </select>
+        <br/>
+        <p>Tipo de dilatação:</p>
+        <select id="tipo" name="material">
+             <option value=1>Linear</option>
+             <option value=2>Superficial</option>
+             <option value=3>Volumetrica</option>
+
+        </select>
+        <br/>
+         <br/>
+        <button onclick="simular()">CALCULAR</button>
+    <hr/>
+        
+    </center>
+    </body>
+</html>
+
+<script>
+
+var material_escolhido;
+var tipo_de_dilatação;
+
+var temperatura_inicial = 20;
+var temperatura_final = 220
+var variação_temperatura;
+
+var tamanho_inicial = 100;
+
+function simular(){   
+    const marcados = document.querySelectorAll(".opcao:checked").length;
+
+    if (marcados != 3) {
+        alert("Selecione exatamente 3 variáveis.");
+    } else{
+    
+    temperatura_inicial = +document.getElementById("seletor_ti").value;
+    temperatura_final = +document.getElementById("seletor_tf").value;
+    tamanho_inicial = +document.getElementById("seletor_tai").value;
+    tamanho_final = +document.getElementById("seletor_taf").value;
+    variação_temperatura = +temperatura_final - temperatura_inicial;
+    material_escolhido = +document.getElementById("material").value;
+    tipo_de_dilatação = +document.getElementById("tipo").value;
+
+    const ti  = document.getElementById("cbti").checked;
+    const tf  = document.getElementById("cbtf").checked;
+    const tai = document.getElementById("cbtai").checked;
+    const taf = document.getElementById("cbtaf").checked;
+
+    // TI + TF + TAI -> calcular TAF
+    if (ti && tf && tai) {
+        document.getElementById("seletor_taf").value = tamanho_inicial + variação_temperatura*material_escolhido*tamanho_inicial*tipo_de_dilatação;
+    }
+
+    // TI + TF + TAF -> calcular TAI
+    else if (ti && tf && taf) {
+        document.getElementById("seletor_tai").value = tamanho_final /(1 + material_escolhido * tipo_de_dilatação * variação_temperatura);
+    }
+
+    // TI + TAI + TAF -> calcular TF
+    else if (ti && tai && taf) {
+       document.getElementById("seletor_tf").value = temperatura_inicial + ((tamanho_final - tamanho_inicial) /(tamanho_inicial * material_escolhido * tipo_de_dilatação));
+    }
+
+    // TF + TAI + TAF -> calcular TI
+    else if (tf && tai && taf) {
+    document.getElementById("seletor_ti").value = temperatura_final -((tamanho_final - tamanho_inicial) /(tamanho_inicial * material_escolhido * tipo_de_dilatação));
+    }
+    };
+
+};
+
+</script>
